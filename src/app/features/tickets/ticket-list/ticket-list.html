@@ -1,0 +1,92 @@
+<div class="page-header">
+  <h1>Tickets</h1>
+  <button mat-flat-button color="primary" routerLink="/tickets/new">
+    <mat-icon>add</mat-icon>
+    New Ticket
+  </button>
+</div>
+
+<div class="filters">
+  <mat-form-field appearance="outline">
+    <mat-label>Search</mat-label>
+    <input matInput [ngModel]="search" (ngModelChange)="onSearchInput($event)" placeholder="Title or description" />
+  </mat-form-field>
+
+  <mat-form-field appearance="outline">
+    <mat-label>Status</mat-label>
+    <mat-select [(ngModel)]="statusFilter" (selectionChange)="onFilterChange()">
+      <mat-option [value]="null">All</mat-option>
+      @for (status of statuses; track status) {
+        <mat-option [value]="status">{{ status }}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field appearance="outline">
+    <mat-label>Priority</mat-label>
+    <mat-select [(ngModel)]="priorityFilter" (selectionChange)="onFilterChange()">
+      <mat-option [value]="null">All</mat-option>
+      @for (priority of priorities; track priority) {
+        <mat-option [value]="priority">{{ priority }}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+</div>
+
+@if (loading()) {
+  <div class="loading">
+    <mat-spinner diameter="32" />
+  </div>
+} @else {
+  <table mat-table [dataSource]="tickets()" matSort (matSortChange)="onSortChange($event)" class="tickets-table">
+    <ng-container matColumnDef="id">
+      <th mat-header-cell *matHeaderCellDef>#</th>
+      <td mat-cell *matCellDef="let ticket">{{ ticket.id }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="title">
+      <th mat-header-cell mat-sort-header="title" *matHeaderCellDef>Title</th>
+      <td mat-cell *matCellDef="let ticket">{{ ticket.title }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="status">
+      <th mat-header-cell mat-sort-header="status" *matHeaderCellDef>Status</th>
+      <td mat-cell *matCellDef="let ticket"><app-status-badge [status]="ticket.status" /></td>
+    </ng-container>
+
+    <ng-container matColumnDef="priority">
+      <th mat-header-cell mat-sort-header="priority" *matHeaderCellDef>Priority</th>
+      <td mat-cell *matCellDef="let ticket"><app-priority-badge [priority]="ticket.priority" /></td>
+    </ng-container>
+
+    <ng-container matColumnDef="assignedTo">
+      <th mat-header-cell *matHeaderCellDef>Assigned to</th>
+      <td mat-cell *matCellDef="let ticket">{{ ticket.assignedToName ?? '—' }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="createdAt">
+      <th mat-header-cell mat-sort-header="createdAt" *matHeaderCellDef>Created</th>
+      <td mat-cell *matCellDef="let ticket">{{ ticket.createdAtUtc | date: 'short' }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="timeSpent">
+      <th mat-header-cell *matHeaderCellDef>Time logged</th>
+      <td mat-cell *matCellDef="let ticket">{{ ticket.totalTimeSpentMinutes }} min</td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let ticket; columns: displayedColumns" (click)="openTicket(ticket.id)" class="clickable-row"></tr>
+  </table>
+
+  @if (tickets().length === 0) {
+    <p class="empty-state">No tickets found.</p>
+  }
+
+  <mat-paginator
+    [length]="totalCount()"
+    [pageSize]="pageSize"
+    [pageIndex]="page - 1"
+    [pageSizeOptions]="[10, 20, 50]"
+    (page)="onPageChange($event)"
+  />
+}

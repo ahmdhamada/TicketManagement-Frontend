@@ -1,0 +1,14 @@
+.badge {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+
+  &--low { background: #eceff1; color: #37474f; }
+  &--medium { background: #e3f2fd; color: #0d47a1; }
+  &--high { background: #fff3e0; color: #a15c00; }
+  &--critical { background: #ffebee; color: #b71c1c; }
+}

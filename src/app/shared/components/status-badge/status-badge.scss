@@ -1,0 +1,14 @@
+.badge {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+
+  &--open { background: #e3f2fd; color: #0d47a1; }
+  &--inprogress { background: #fff8e1; color: #8a6100; }
+  &--resolved { background: #e8f5e9; color: #1b5e20; }
+  &--closed { background: #eceff1; color: #37474f; }
+}

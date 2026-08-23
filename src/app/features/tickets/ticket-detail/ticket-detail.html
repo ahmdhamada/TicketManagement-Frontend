@@ -1,0 +1,146 @@
+@if (loading()) {
+  <div class="loading"><mat-spinner diameter="32" /></div>
+} @else if (ticket(); as t) {
+  <div class="detail-grid">
+    <mat-card class="main-panel">
+      <div class="header-row">
+        @if (!editingDetails()) {
+          <h1>{{ t.title }}</h1>
+        } @else {
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Title</mat-label>
+            <input matInput [formControl]="detailsForm.controls.title" />
+          </mat-form-field>
+        }
+
+        <div class="badges">
+          <app-status-badge [status]="t.status" />
+          <app-priority-badge [priority]="t.priority" />
+        </div>
+      </div>
+
+      <p class="meta">
+        Created by {{ t.createdByName }} on {{ t.createdAtUtc | date: 'medium' }}
+        @if (t.assignedToName) { &middot; Assigned to {{ t.assignedToName }} }
+      </p>
+
+      @if (!editingDetails()) {
+        <p class="description">{{ t.description }}</p>
+        @if (canEditDetails()) {
+          <button mat-stroked-button (click)="startEditingDetails()">
+            <mat-icon>edit</mat-icon>
+            Edit details
+          </button>
+        }
+      } @else {
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Description</mat-label>
+          <textarea matInput rows="4" [formControl]="detailsForm.controls.description"></textarea>
+        </mat-form-field>
+        <button mat-flat-button color="primary" (click)="saveDetails()" [disabled]="detailsForm.invalid">Save</button>
+        <button mat-button (click)="editingDetails.set(false)">Cancel</button>
+      }
+
+      <mat-divider class="section-divider" />
+
+      <h2>Time logged: {{ t.totalTimeSpentMinutes }} minutes</h2>
+
+      @if (authService.role() === UserRole.Admin || authService.role() === UserRole.Agent) {
+        <form [formGroup]="timeForm" (ngSubmit)="logTime()" class="time-form">
+          <mat-form-field appearance="outline">
+            <mat-label>Work date</mat-label>
+            <input matInput type="date" formControlName="workDate" />
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>Minutes</mat-label>
+            <input matInput type="number" formControlName="durationMinutes" />
+          </mat-form-field>
+          <mat-form-field appearance="outline" class="grow">
+            <mat-label>Description</mat-label>
+            <input matInput formControlName="description" />
+          </mat-form-field>
+          <button mat-flat-button color="primary" type="submit" [disabled]="timeForm.invalid">Log time</button>
+        </form>
+      }
+
+      @if (timeEntries().length > 0) {
+        <ul class="time-entries">
+          @for (entry of timeEntries(); track entry.id) {
+            <li>{{ entry.workDate }} &mdash; {{ entry.durationMinutes }} min by {{ entry.userName }} @if (entry.description) { : {{ entry.description }} }</li>
+          }
+        </ul>
+      }
+
+      <mat-divider class="section-divider" />
+
+      <h2>Timeline</h2>
+      <ul class="timeline">
+        @for (entry of timeline(); track entry.at + entry.kind) {
+          <li>
+            @if (entry.kind === 'comment') {
+              <div class="timeline-item comment">
+                <strong>{{ entry.comment.authorName }}</strong>
+                <span class="timestamp">{{ entry.comment.createdAtUtc | date: 'short' }}</span>
+                <p>{{ entry.comment.body }}</p>
+              </div>
+            } @else {
+              <div class="timeline-item activity">
+                <mat-icon inline>history</mat-icon>
+                <strong>{{ entry.activity.actorName }}</strong> {{ describeActivity(entry.activity) }}
+                <span class="timestamp">{{ entry.activity.createdAtUtc | date: 'short' }}</span>
+              </div>
+            }
+          </li>
+        }
+      </ul>
+
+      <form [formGroup]="commentForm" (ngSubmit)="addComment()" class="comment-form">
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Add a comment</mat-label>
+          <textarea matInput rows="2" formControlName="body"></textarea>
+        </mat-form-field>
+        <button mat-flat-button color="primary" type="submit" [disabled]="commentForm.invalid">Post comment</button>
+      </form>
+    </mat-card>
+
+    <mat-card class="side-panel">
+      <h2>Actions</h2>
+
+      @if (nextStatuses().length > 0) {
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Change status</mat-label>
+          <mat-select (selectionChange)="changeStatus($event.value)">
+            @for (status of nextStatuses(); track status) {
+              <mat-option [value]="status">{{ status }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+      } @else {
+        <p class="hint">No further status changes available.</p>
+      }
+
+      @if (authService.role() === UserRole.Admin || authService.role() === UserRole.Agent) {
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Change priority</mat-label>
+          <mat-select [value]="t.priority" (selectionChange)="changePriority($event.value)">
+            @for (priority of priorities; track priority) {
+              <mat-option [value]="priority">{{ priority }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+      }
+
+      @if (authService.role() === UserRole.Admin) {
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Assign to agent</mat-label>
+          <mat-select [value]="t.assignedToUserId" (selectionChange)="assignTo($event.value)">
+            <mat-option [value]="null">Unassigned</mat-option>
+            @for (agent of agents(); track agent.id) {
+              <mat-option [value]="agent.id">{{ agent.fullName }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+      }
+    </mat-card>
+  </div>
+}

@@ -1,0 +1,35 @@
+.toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.brand {
+  font-weight: 600;
+}
+
+.spacer {
+  flex: 1 1 auto;
+}
+
+.user-chip {
+  margin-right: 8px;
+  font-size: 14px;
+  opacity: 0.9;
+}
+
+.container {
+  height: calc(100vh - 64px);
+}
+
+.sidenav {
+  width: 220px;
+}
+
+.content {
+  padding: 24px;
+}
+
+.active-link {
+  background: rgba(0, 0, 0, 0.05);
+}

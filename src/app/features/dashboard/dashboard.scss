@@ -1,0 +1,48 @@
+.loading {
+  display: flex;
+  justify-content: center;
+  padding: 48px;
+}
+
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.stat-tile {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+
+  &.critical {
+    background: #fff3f3;
+  }
+}
+
+.stat-value {
+  font-size: 28px;
+  font-weight: 700;
+}
+
+.stat-label {
+  color: rgba(0, 0, 0, 0.6);
+  font-size: 13px;
+}
+
+.chart-and-workload {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+
+  @media (max-width: 900px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.chart-card,
+.workload-card {
+  padding: 20px;
+}

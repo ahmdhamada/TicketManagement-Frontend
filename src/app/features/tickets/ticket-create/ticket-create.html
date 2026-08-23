@@ -1,0 +1,32 @@
+<mat-card class="form-card">
+  <h1>New ticket</h1>
+
+  <form [formGroup]="form" (ngSubmit)="submit()">
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Title</mat-label>
+      <input matInput formControlName="title" />
+      @if (form.controls.title.invalid && form.controls.title.touched) {
+        <mat-error>Title must be 3-200 characters.</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Description</mat-label>
+      <textarea matInput rows="6" formControlName="description"></textarea>
+      @if (form.controls.description.invalid && form.controls.description.touched) {
+        <mat-error>Description must be 5-4000 characters.</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Priority</mat-label>
+      <mat-select formControlName="priority">
+        @for (priority of priorities; track priority) {
+          <mat-option [value]="priority">{{ priority }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    <button mat-flat-button color="primary" type="submit" [disabled]="submitting()">Create ticket</button>
+  </form>
+</mat-card>
