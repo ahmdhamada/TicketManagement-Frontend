@@ -1,8 +1,62 @@
-.form-card {
-  max-width: 600px;
-  padding: 24px;
-}
+.create-ticket-page {
+  max-width: 760px;
+  margin: 0 auto;
 
-.full-width {
-  width: 100%;
+  .header-nav {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 24px;
+
+    h1 {
+      margin: 0;
+    }
+  }
+
+  .form-card {
+    padding: 32px !important;
+    border-radius: 20px !important;
+
+    .card-intro {
+      margin-bottom: 24px;
+
+      p {
+        color: #64748b;
+        font-size: 0.95rem;
+        margin: 0;
+      }
+    }
+
+    .ticket-form {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+
+      .full-width {
+        width: 100%;
+      }
+
+      mat-icon[matPrefix] {
+        color: #94a3b8;
+        margin-right: 8px;
+      }
+
+      .form-actions {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        gap: 12px;
+        margin-top: 8px;
+
+        .submit-btn {
+          height: 46px !important;
+          border-radius: 12px !important;
+          background: linear-gradient(135deg, #4f46e5 0%, #4338ca 100%) !important;
+          display: flex;
+          align-items: center;
+          gap: 6px;
+        }
+      }
+    }
+  }
 }

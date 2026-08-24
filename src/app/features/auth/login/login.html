@@ -1,47 +1,74 @@
-<div class="auth-page">
+<div class="auth-page-container">
   <mat-card class="auth-card">
-    <h1>Sign in</h1>
-    <p class="subtitle">Support Ticket Management System</p>
+    <div class="auth-header">
+      <div class="brand-badge">
+        <mat-icon class="brand-icon">confirmation_number</mat-icon>
+      </div>
+      <h1>Welcome back</h1>
+      <p class="subtitle">Support Ticket Management System</p>
+    </div>
 
-    <form [formGroup]="form" (ngSubmit)="submit()">
+    <form [formGroup]="form" (ngSubmit)="submit()" class="auth-form">
       <mat-form-field appearance="outline" class="full-width">
-        <mat-label>Email</mat-label>
-        <input matInput type="email" formControlName="email" autocomplete="email" />
+        <mat-label>Email address</mat-label>
+        <mat-icon matPrefix>email</mat-icon>
+        <input matInput type="email" formControlName="email" autocomplete="email" placeholder="name@example.com" />
         @if (form.controls.email.invalid && form.controls.email.touched) {
-          <mat-error>A valid email is required.</mat-error>
+          <mat-error>A valid email address is required.</mat-error>
         }
       </mat-form-field>
 
       <mat-form-field appearance="outline" class="full-width">
         <mat-label>Password</mat-label>
-        <input matInput type="password" formControlName="password" autocomplete="current-password" />
+        <mat-icon matPrefix>lock</mat-icon>
+        <input matInput type="password" formControlName="password" autocomplete="current-password" placeholder="••••••••" />
         @if (form.controls.password.invalid && form.controls.password.touched) {
           <mat-error>Password is required.</mat-error>
         }
       </mat-form-field>
 
       @if (errorMessage(); as message) {
-        <p class="error">{{ message }}</p>
+        <div class="error-banner">
+          <mat-icon>error_outline</mat-icon>
+          <span>{{ message }}</span>
+        </div>
       }
 
-      <button mat-flat-button color="primary" type="submit" class="full-width" [disabled]="loading()">
+      <button mat-flat-button color="primary" type="submit" class="submit-btn full-width" [disabled]="loading()">
         @if (loading()) {
           <mat-spinner diameter="20" />
         } @else {
-          Sign in
+          <ng-container>
+            <span>Sign in</span>
+            <mat-icon>arrow_forward</mat-icon>
+          </ng-container>
         }
       </button>
     </form>
 
-    <p class="switch-link">Don't have an account? <a routerLink="/register">Register</a></p>
+    <div class="auth-footer">
+      <p class="switch-link">Don't have an account? <a routerLink="/register">Register</a></p>
+    </div>
 
-    <div class="demo-accounts">
-      <p><strong>Demo accounts</strong> (password: Passw0rd!)</p>
-      <ul>
-        <li>admin&#64;invento.sa &mdash; Admin</li>
-        <li>agent1&#64;invento.sa &mdash; Agent</li>
-        <li>customer1&#64;invento.sa &mdash; Customer</li>
-      </ul>
+    <div class="demo-accounts-card">
+      <div class="demo-header">
+        <mat-icon>info</mat-icon>
+        <span>Quick Demo Accounts (Click to Auto-fill)</span>
+      </div>
+      <div class="demo-chips">
+        <button type="button" class="demo-chip" (click)="fillDemoAccount('admin@invento.sa')">
+          <span class="role-tag admin">Admin</span>
+          <span class="email-text">admin&#64;invento.sa</span>
+        </button>
+        <button type="button" class="demo-chip" (click)="fillDemoAccount('agent1@invento.sa')">
+          <span class="role-tag agent">Agent</span>
+          <span class="email-text">agent1&#64;invento.sa</span>
+        </button>
+        <button type="button" class="demo-chip" (click)="fillDemoAccount('customer1@invento.sa')">
+          <span class="role-tag customer">Customer</span>
+          <span class="email-text">customer1&#64;invento.sa</span>
+        </button>
+      </div>
     </div>
   </mat-card>
 </div>

@@ -1,32 +1,57 @@
-<mat-card class="form-card">
-  <h1>New ticket</h1>
+<div class="create-ticket-page">
+  <div class="header-nav">
+    <button mat-icon-button routerLink="/tickets" aria-label="Back to tickets">
+      <mat-icon>arrow_back</mat-icon>
+    </button>
+    <h1>Submit New Support Ticket</h1>
+  </div>
 
-  <form [formGroup]="form" (ngSubmit)="submit()">
-    <mat-form-field appearance="outline" class="full-width">
-      <mat-label>Title</mat-label>
-      <input matInput formControlName="title" />
-      @if (form.controls.title.invalid && form.controls.title.touched) {
-        <mat-error>Title must be 3-200 characters.</mat-error>
-      }
-    </mat-form-field>
+  <mat-card class="form-card">
+    <div class="card-intro">
+      <p>Fill out the details below to submit your ticket to our support team.</p>
+    </div>
 
-    <mat-form-field appearance="outline" class="full-width">
-      <mat-label>Description</mat-label>
-      <textarea matInput rows="6" formControlName="description"></textarea>
-      @if (form.controls.description.invalid && form.controls.description.touched) {
-        <mat-error>Description must be 5-4000 characters.</mat-error>
-      }
-    </mat-form-field>
-
-    <mat-form-field appearance="outline" class="full-width">
-      <mat-label>Priority</mat-label>
-      <mat-select formControlName="priority">
-        @for (priority of priorities; track priority) {
-          <mat-option [value]="priority">{{ priority }}</mat-option>
+    <form [formGroup]="form" (ngSubmit)="submit()" class="ticket-form">
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Subject / Title</mat-label>
+        <mat-icon matPrefix>title</mat-icon>
+        <input matInput formControlName="title" placeholder="Brief summary of the issue..." />
+        @if (form.controls.title.invalid && form.controls.title.touched) {
+          <mat-error>Title must be between 3 and 200 characters.</mat-error>
         }
-      </mat-select>
-    </mat-form-field>
+      </mat-form-field>
 
-    <button mat-flat-button color="primary" type="submit" [disabled]="submitting()">Create ticket</button>
-  </form>
-</mat-card>
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Priority Level</mat-label>
+        <mat-icon matPrefix>flag</mat-icon>
+        <mat-select formControlName="priority">
+          @for (priority of priorities; track priority) {
+            <mat-option [value]="priority">{{ priority }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Detailed Description</mat-label>
+        <textarea matInput rows="6" formControlName="description" placeholder="Describe the problem, steps to reproduce, or requested outcome..."></textarea>
+        @if (form.controls.description.invalid && form.controls.description.touched) {
+          <mat-error>Description must be between 5 and 4000 characters.</mat-error>
+        }
+      </mat-form-field>
+
+      <div class="form-actions">
+        <button mat-stroked-button type="button" routerLink="/tickets">Cancel</button>
+        <button mat-flat-button color="primary" type="submit" [disabled]="submitting()" class="submit-btn">
+          @if (submitting()) {
+            <mat-spinner diameter="20" />
+          } @else {
+            <ng-container>
+              <mat-icon>send</mat-icon>
+              <span>Create Ticket</span>
+            </ng-container>
+          }
+        </button>
+      </div>
+    </form>
+  </mat-card>
+</div>

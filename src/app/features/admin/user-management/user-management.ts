@@ -16,6 +16,7 @@ import { UserRole } from '../../../core/models/enums';
 
 @Component({
   selector: 'app-user-management',
+  standalone: true,
   imports: [
     CommonModule,
     ReactiveFormsModule,
@@ -36,7 +37,7 @@ export class UserManagement implements OnInit {
 
   readonly roles = [UserRole.Admin, UserRole.Agent, UserRole.Customer];
   readonly users = signal<User[]>([]);
-  readonly displayedColumns = ['fullName', 'email', 'role', 'isActive', 'actions'];
+  readonly displayedColumns = ['fullName', 'email', 'role', 'isActive'];
   readonly showCreateForm = signal(false);
 
   readonly createForm = this.fb.group({
@@ -50,6 +51,15 @@ export class UserManagement implements OnInit {
 
   ngOnInit(): void {
     this.load();
+  }
+
+  getInitials(name: string): string {
+    if (!name) return 'U';
+    const parts = name.trim().split(' ');
+    if (parts.length >= 2) {
+      return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+    }
+    return parts[0].substring(0, 2).toUpperCase();
   }
 
   load(): void {

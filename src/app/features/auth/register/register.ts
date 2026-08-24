@@ -5,14 +5,15 @@ import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { HttpErrorResponse } from '@angular/common/http';
 import { AuthService } from '../../../core/services/auth.service';
 import { UserRole } from '../../../core/models/enums';
 
-/** Public self-registration always creates a Customer account; Admins create Agent/Admin accounts separately. */
 @Component({
   selector: 'app-register',
+  standalone: true,
   imports: [
     ReactiveFormsModule,
     RouterLink,
@@ -20,6 +21,7 @@ import { UserRole } from '../../../core/models/enums';
     MatFormFieldModule,
     MatInputModule,
     MatButtonModule,
+    MatIconModule,
     MatProgressSpinnerModule
   ],
   templateUrl: './register.html',

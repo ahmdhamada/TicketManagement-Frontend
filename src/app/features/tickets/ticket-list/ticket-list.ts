@@ -11,6 +11,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { debounceTime, distinctUntilChanged, Subject } from 'rxjs';
 
 import { TicketService } from '../../../core/services/ticket.service';
@@ -23,6 +24,7 @@ import { PriorityBadge } from '../../../shared/components/priority-badge/priorit
 
 @Component({
   selector: 'app-ticket-list',
+  standalone: true,
   imports: [
     CommonModule,
     FormsModule,
@@ -36,6 +38,7 @@ import { PriorityBadge } from '../../../shared/components/priority-badge/priorit
     MatButtonModule,
     MatIconModule,
     MatProgressSpinnerModule,
+    MatTooltipModule,
     StatusBadge,
     PriorityBadge
   ],
@@ -77,7 +80,6 @@ export class TicketList implements OnInit {
   ngOnInit(): void {
     this.load();
 
-    // Live-refresh the list when any ticket relevant to this user changes elsewhere.
     this.signalrService.ticketCreated.subscribe(() => this.load());
     this.signalrService.ticketUpdated.subscribe(() => this.load());
   }
@@ -88,6 +90,14 @@ export class TicketList implements OnInit {
   }
 
   onFilterChange(): void {
+    this.page = 1;
+    this.load();
+  }
+
+  resetFilters(): void {
+    this.search = '';
+    this.statusFilter = null;
+    this.priorityFilter = null;
     this.page = 1;
     this.load();
   }

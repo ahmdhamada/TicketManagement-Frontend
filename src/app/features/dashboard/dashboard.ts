@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTableModule } from '@angular/material/table';
+import { MatIconModule } from '@angular/material/icon';
 import { BaseChartDirective } from 'ng2-charts';
 import { ChartConfiguration } from 'chart.js';
 
@@ -12,15 +13,16 @@ import { DashboardSummary } from '../../core/models/dashboard.model';
 import { UserRole } from '../../core/models/enums';
 
 const STATUS_COLORS: Record<string, string> = {
-  Open: '#1e88e5',
-  InProgress: '#f9a825',
-  Resolved: '#43a047',
-  Closed: '#78909c'
+  Open: '#0284c7',
+  InProgress: '#d97706',
+  Resolved: '#16a34a',
+  Closed: '#64748b'
 };
 
 @Component({
   selector: 'app-dashboard',
-  imports: [CommonModule, MatCardModule, MatProgressSpinnerModule, MatTableModule, BaseChartDirective],
+  standalone: true,
+  imports: [CommonModule, MatCardModule, MatProgressSpinnerModule, MatTableModule, MatIconModule, BaseChartDirective],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.scss'
 })
@@ -34,7 +36,17 @@ export class Dashboard implements OnInit {
   statusChartData: ChartConfiguration<'doughnut'>['data'] = { labels: [], datasets: [{ data: [] }] };
   readonly chartOptions: ChartConfiguration<'doughnut'>['options'] = {
     responsive: true,
-    plugins: { legend: { position: 'bottom' } }
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        position: 'bottom',
+        labels: {
+          font: { family: 'Plus Jakarta Sans', size: 12, weight: 'bold' },
+          padding: 16,
+          usePointStyle: true
+        }
+      }
+    }
   };
 
   constructor(private readonly dashboardService: DashboardService, readonly authService: AuthService) {}
@@ -48,7 +60,8 @@ export class Dashboard implements OnInit {
           datasets: [
             {
               data: summary.byStatus.map((s) => s.count),
-              backgroundColor: summary.byStatus.map((s) => STATUS_COLORS[s.status] ?? '#90a4ae')
+              backgroundColor: summary.byStatus.map((s) => STATUS_COLORS[s.status] ?? '#94a3b8'),
+              borderWidth: 0
             }
           ]
         };

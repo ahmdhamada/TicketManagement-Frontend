@@ -1,48 +1,196 @@
-.loading {
-  display: flex;
-  justify-content: center;
-  padding: 48px;
-}
-
-.stat-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-  gap: 16px;
-  margin-bottom: 24px;
-}
-
-.stat-tile {
-  padding: 20px;
+.dashboard-page {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 24px;
 
-  &.critical {
-    background: #fff3f3;
+  .header-title-group {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    h1 {
+      margin: 0;
+    }
+
+    .subtitle-tag {
+      font-size: 0.775rem;
+      font-weight: 700;
+      color: #6366f1;
+      background: #e0e7ff;
+      padding: 4px 12px;
+      border-radius: 999px;
+    }
   }
-}
 
-.stat-value {
-  font-size: 28px;
-  font-weight: 700;
-}
-
-.stat-label {
-  color: rgba(0, 0, 0, 0.6);
-  font-size: 13px;
-}
-
-.chart-and-workload {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 16px;
-
-  @media (max-width: 900px) {
-    grid-template-columns: 1fr;
+  .loading-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 80px 0;
+    gap: 16px;
+    color: #64748b;
+    font-weight: 600;
   }
-}
 
-.chart-card,
-.workload-card {
-  padding: 20px;
+  // KPI Stat Cards Grid
+  .stat-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 20px;
+
+    .stat-card {
+      padding: 24px !important;
+      border-radius: 20px !important;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+
+      .stat-icon-wrapper {
+        width: 52px;
+        height: 52px;
+        border-radius: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        mat-icon {
+          font-size: 28px;
+          width: 28px;
+          height: 28px;
+        }
+      }
+
+      .stat-content {
+        display: flex;
+        flex-direction: column;
+
+        .stat-value {
+          font-size: 1.85rem;
+          font-weight: 800;
+          line-height: 1.2;
+          color: #0f172a;
+          letter-spacing: -0.02em;
+        }
+
+        .stat-label {
+          font-size: 0.825rem;
+          font-weight: 700;
+          color: #64748b;
+        }
+      }
+
+      &.blue {
+        .stat-icon-wrapper { background: #e0e7ff; color: #4338ca; }
+      }
+
+      &.cyan {
+        .stat-icon-wrapper { background: #e0f2fe; color: #0284c7; }
+      }
+
+      &.critical {
+        .stat-icon-wrapper { background: #ffe4e6; color: #be123c; }
+      }
+
+      &.emerald {
+        .stat-icon-wrapper { background: #dcfce7; color: #15803d; }
+      }
+    }
+  }
+
+  // Dashboard Main Grid (Charts & Tables)
+  .dashboard-main-grid {
+    display: grid;
+    grid-template-columns: 380px 1fr;
+    gap: 24px;
+
+    @media (max-width: 1024px) {
+      grid-template-columns: 1fr;
+    }
+
+    .chart-card, .workload-card {
+      padding: 24px !important;
+
+      .card-header {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 20px;
+
+        mat-icon {
+          color: #6366f1;
+        }
+
+        h2 {
+          margin: 0;
+          font-size: 1.15rem;
+        }
+      }
+    }
+
+    .chart-card {
+      .chart-wrapper {
+        height: 280px;
+        position: relative;
+      }
+    }
+
+    .workload-card {
+      .table-wrapper {
+        overflow: hidden;
+        border-radius: 12px;
+        border: 1px solid #e2e8f0;
+
+        .workload-table {
+          width: 100%;
+
+          .mat-mdc-header-row {
+            background: #f8fafc;
+
+            .mat-mdc-header-cell {
+              font-weight: 700;
+              color: #475569;
+              font-size: 0.775rem;
+              text-transform: uppercase;
+            }
+          }
+
+          .agent-cell {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 700;
+            color: #0f172a;
+
+            .agent-icon {
+              color: #94a3b8;
+              font-size: 20px;
+              width: 20px;
+              height: 20px;
+            }
+          }
+
+          .count-chip {
+            padding: 2px 8px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 700;
+
+            &.open { background: #e0f2fe; color: #0369a1; }
+            &.progress { background: #fef3c7; color: #b45309; }
+          }
+
+          .total-text {
+            font-weight: 700;
+            color: #334155;
+          }
+
+          .time-text {
+            font-size: 0.825rem;
+            color: #64748b;
+          }
+        }
+      }
+    }
+  }
 }

@@ -1,61 +1,120 @@
-<h1>Dashboard</h1>
-
-@if (loading()) {
-  <div class="loading"><mat-spinner diameter="32" /></div>
-} @else if (summary(); as s) {
-  <div class="stat-grid">
-    <mat-card class="stat-tile">
-      <span class="stat-value">{{ s.totalTickets }}</span>
-      <span class="stat-label">Total tickets</span>
-    </mat-card>
-    <mat-card class="stat-tile">
-      <span class="stat-value">{{ s.openTickets }}</span>
-      <span class="stat-label">Open</span>
-    </mat-card>
-    <mat-card class="stat-tile critical">
-      <span class="stat-value">{{ s.openCriticalTickets }}</span>
-      <span class="stat-label">Open &amp; Critical</span>
-    </mat-card>
-    <mat-card class="stat-tile">
-      <span class="stat-value">{{ s.averageResolutionHours }}h</span>
-      <span class="stat-label">Avg. resolution time</span>
-    </mat-card>
+<div class="dashboard-page">
+  <div class="page-header">
+    <div class="header-title-group">
+      <h1>Performance Dashboard</h1>
+      <span class="subtitle-tag">Live Analytics &amp; Metrics</span>
+    </div>
   </div>
 
-  <div class="chart-and-workload">
-    <mat-card class="chart-card">
-      <h2>Tickets by status</h2>
-      <canvas baseChart [data]="statusChartData" [options]="chartOptions" type="doughnut"></canvas>
-    </mat-card>
-
-    @if (authService.role() === UserRole.Admin && s.agentWorkload.length > 0) {
-      <mat-card class="workload-card">
-        <h2>Agent workload</h2>
-        <table mat-table [dataSource]="s.agentWorkload">
-          <ng-container matColumnDef="agentName">
-            <th mat-header-cell *matHeaderCellDef>Agent</th>
-            <td mat-cell *matCellDef="let row">{{ row.agentName }}</td>
-          </ng-container>
-          <ng-container matColumnDef="openCount">
-            <th mat-header-cell *matHeaderCellDef>Open</th>
-            <td mat-cell *matCellDef="let row">{{ row.openCount }}</td>
-          </ng-container>
-          <ng-container matColumnDef="inProgressCount">
-            <th mat-header-cell *matHeaderCellDef>In progress</th>
-            <td mat-cell *matCellDef="let row">{{ row.inProgressCount }}</td>
-          </ng-container>
-          <ng-container matColumnDef="totalAssigned">
-            <th mat-header-cell *matHeaderCellDef>Total assigned</th>
-            <td mat-cell *matCellDef="let row">{{ row.totalAssigned }}</td>
-          </ng-container>
-          <ng-container matColumnDef="totalMinutesLogged">
-            <th mat-header-cell *matHeaderCellDef>Minutes logged</th>
-            <td mat-cell *matCellDef="let row">{{ row.totalMinutesLogged }}</td>
-          </ng-container>
-          <tr mat-header-row *matHeaderRowDef="workloadColumns"></tr>
-          <tr mat-row *matRowDef="let row; columns: workloadColumns"></tr>
-        </table>
+  @if (loading()) {
+    <div class="loading-state">
+      <mat-spinner diameter="40" />
+      <span>Loading summary data...</span>
+    </div>
+  } @else if (summary(); as s) {
+    <div class="stat-grid">
+      <mat-card class="stat-card blue">
+        <div class="stat-icon-wrapper">
+          <mat-icon>confirmation_number</mat-icon>
+        </div>
+        <div class="stat-content">
+          <span class="stat-value">{{ s.totalTickets }}</span>
+          <span class="stat-label">Total Tickets</span>
+        </div>
       </mat-card>
-    }
-  </div>
-}
+
+      <mat-card class="stat-card cyan">
+        <div class="stat-icon-wrapper">
+          <mat-icon>pending_actions</mat-icon>
+        </div>
+        <div class="stat-content">
+          <span class="stat-value">{{ s.openTickets }}</span>
+          <span class="stat-label">Open Tickets</span>
+        </div>
+      </mat-card>
+
+      <mat-card class="stat-card critical">
+        <div class="stat-icon-wrapper">
+          <mat-icon>error</mat-icon>
+        </div>
+        <div class="stat-content">
+          <span class="stat-value">{{ s.openCriticalTickets }}</span>
+          <span class="stat-label">Open &amp; Critical</span>
+        </div>
+      </mat-card>
+
+      <mat-card class="stat-card emerald">
+        <div class="stat-icon-wrapper">
+          <mat-icon>timer</mat-icon>
+        </div>
+        <div class="stat-content">
+          <span class="stat-value">{{ s.averageResolutionHours }}h</span>
+          <span class="stat-label">Avg. Resolution Time</span>
+        </div>
+      </mat-card>
+    </div>
+
+    <div class="dashboard-main-grid">
+      <mat-card class="chart-card">
+        <div class="card-header">
+          <mat-icon>pie_chart</mat-icon>
+          <h2>Tickets by Status</h2>
+        </div>
+        <div class="chart-wrapper">
+          <canvas baseChart [data]="statusChartData" [options]="chartOptions" type="doughnut"></canvas>
+        </div>
+      </mat-card>
+
+      @if (authService.role() === UserRole.Admin && s.agentWorkload.length > 0) {
+        <mat-card class="workload-card">
+          <div class="card-header">
+            <mat-icon>badge</mat-icon>
+            <h2>Agent Workload Distribution</h2>
+          </div>
+          <div class="table-wrapper">
+            <table mat-table [dataSource]="s.agentWorkload" class="workload-table">
+              <ng-container matColumnDef="agentName">
+                <th mat-header-cell *matHeaderCellDef>Agent</th>
+                <td mat-cell *matCellDef="let row" class="agent-cell">
+                  <mat-icon class="agent-icon">person</mat-icon>
+                  <span>{{ row.agentName }}</span>
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="openCount">
+                <th mat-header-cell *matHeaderCellDef>Open</th>
+                <td mat-cell *matCellDef="let row">
+                  <span class="count-chip open">{{ row.openCount }}</span>
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="inProgressCount">
+                <th mat-header-cell *matHeaderCellDef>In Progress</th>
+                <td mat-cell *matCellDef="let row">
+                  <span class="count-chip progress">{{ row.inProgressCount }}</span>
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="totalAssigned">
+                <th mat-header-cell *matHeaderCellDef>Total Assigned</th>
+                <td mat-cell *matCellDef="let row">
+                  <span class="total-text">{{ row.totalAssigned }}</span>
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="totalMinutesLogged">
+                <th mat-header-cell *matHeaderCellDef>Minutes Logged</th>
+                <td mat-cell *matCellDef="let row">
+                  <span class="time-text">{{ row.totalMinutesLogged }} mins</span>
+                </td>
+              </ng-container>
+
+              <tr mat-header-row *matHeaderRowDef="workloadColumns"></tr>
+              <tr mat-row *matRowDef="let row; columns: workloadColumns"></tr>
+            </table>
+          </div>
+        </mat-card>
+      }
+    </div>
+  }
+</div>

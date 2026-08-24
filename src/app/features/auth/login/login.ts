@@ -5,12 +5,14 @@ import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { HttpErrorResponse } from '@angular/common/http';
 import { AuthService } from '../../../core/services/auth.service';
 
 @Component({
   selector: 'app-login',
+  standalone: true,
   imports: [
     ReactiveFormsModule,
     RouterLink,
@@ -18,6 +20,7 @@ import { AuthService } from '../../../core/services/auth.service';
     MatFormFieldModule,
     MatInputModule,
     MatButtonModule,
+    MatIconModule,
     MatProgressSpinnerModule
   ],
   templateUrl: './login.html',
@@ -35,6 +38,13 @@ export class Login {
   readonly errorMessage = signal<string | null>(null);
 
   constructor(private readonly authService: AuthService, private readonly router: Router) {}
+
+  fillDemoAccount(email: string): void {
+    this.form.patchValue({
+      email,
+      password: 'Passw0rd!'
+    });
+  }
 
   submit(): void {
     if (this.form.invalid) {

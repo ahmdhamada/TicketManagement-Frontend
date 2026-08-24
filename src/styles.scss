@@ -1,39 +1,196 @@
-// Include theming for Angular Material with `mat.theme()`.
-// This Sass mixin will define CSS variables that are used for styling Angular Material
-// components according to the Material 3 design spec.
-// Learn more about theming and how to use it for your application's
-// custom components at https://material.angular.dev/guide/theming
+// Material Design 3 configuration and theme tokens
 @use '@angular/material' as mat;
 
 html {
   height: 100%;
+  font-family: 'Plus Jakarta Sans', 'Roboto', sans-serif;
   @include mat.theme(
     (
       color: (
         primary: mat.$azure-palette,
-        tertiary: mat.$blue-palette,
+        tertiary: mat.$cyan-palette,
       ),
-      typography: Roboto,
+      typography: 'Plus Jakarta Sans',
       density: 0,
     )
   );
 }
 
+:root {
+  --app-bg-gradient: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+  --app-card-radius: 16px;
+  --app-card-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.06), 0 2px 6px -1px rgba(15, 23, 42, 0.04);
+  --app-card-hover-shadow: 0 12px 30px -4px rgba(15, 23, 42, 0.12), 0 4px 12px -2px rgba(15, 23, 42, 0.08);
+  --app-primary: #3f51b5;
+  --app-primary-light: #eef2ff;
+  --app-text-main: #0f172a;
+  --app-text-muted: #64748b;
+  --app-border-color: #e2e8f0;
+}
+
 body {
-  // Default the application to a light color theme. This can be changed to
-  // `dark` to enable the dark color theme, or to `light dark` to defer to the
-  // user's system settings.
   color-scheme: light;
-
-  // Set a default background, font and text colors for the application using
-  // Angular Material's system-level CSS variables. Learn more about these
-  // variables at https://material.angular.dev/guide/system-variables
-  background-color: var(--mat-sys-surface);
-  color: var(--mat-sys-on-surface);
-  font: var(--mat-sys-body-medium);
-
-  // Reset the user agent margin.
+  background: var(--app-bg-gradient);
+  color: var(--app-text-main);
+  font-family: 'Plus Jakarta Sans', 'Roboto', sans-serif;
   margin: 0;
   height: 100%;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
-/* You can add global styles to this file, and also import other style files */
+
+// Global Custom Scrollbar
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 999px;
+
+  &:hover {
+    background: #94a3b8;
+  }
+}
+
+// Typography Global Enhancements
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-weight: 700;
+  color: var(--app-text-main);
+  letter-spacing: -0.02em;
+  margin-top: 0;
+}
+
+h1 {
+  font-size: 1.75rem;
+  line-height: 2.25rem;
+
+  @media (min-width: 768px) {
+    font-size: 2rem;
+    line-height: 2.5rem;
+  }
+}
+
+h2 {
+  font-size: 1.25rem;
+  line-height: 1.75rem;
+}
+
+// Material Card Global Styling
+.mat-mdc-card {
+  border-radius: var(--app-card-radius) !important;
+  box-shadow: var(--app-card-shadow) !important;
+  border: 1px solid rgba(226, 232, 240, 0.8) !important;
+  background: #ffffff !important;
+  transition: transform 0.2s ease, box-shadow 0.2s ease !important;
+}
+
+// Form Field Enhancements
+.mat-mdc-form-field {
+  width: 100%;
+
+  .mdc-text-field--outlined {
+    --mdc-outlined-text-field-container-shape: 12px;
+  }
+}
+
+// Button Enhancements
+.mat-mdc-button, .mat-mdc-raised-button, .mat-mdc-flat-button, .mat-mdc-stroked-button {
+  border-radius: 12px !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.01em !important;
+  text-transform: none !important;
+  padding: 0 20px !important;
+  height: 44px !important;
+}
+
+.mat-mdc-unelevated-button, .mat-mdc-flat-button {
+  box-shadow: 0 4px 14px 0 rgba(63, 81, 181, 0.25) !important;
+}
+
+// Page Container Utilities
+.page-container {
+  padding: 24px;
+  max-width: 1320px;
+  margin: 0 auto;
+
+  @media (max-width: 600px) {
+    padding: 16px;
+  }
+}
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  gap: 16px;
+  flex-wrap: wrap;
+
+  h1 {
+    margin: 0;
+  }
+}
+
+// Table Elevation & Card Wrappers
+.table-card {
+  overflow: hidden;
+  border-radius: var(--app-card-radius);
+
+  .mat-mdc-table {
+    background: transparent;
+  }
+
+  .mat-mdc-header-row {
+    background-color: #f8fafc;
+    border-bottom: 2px solid #e2e8f0;
+
+    .mat-mdc-header-cell {
+      font-weight: 700;
+      color: #475569;
+      font-size: 0.825rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+  }
+
+  .mat-mdc-row {
+    transition: background-color 0.15s ease;
+
+    &:hover {
+      background-color: #f1f5f9;
+    }
+  }
+
+  .mat-mdc-cell {
+    font-size: 0.9rem;
+    color: #334155;
+  }
+}
+
+// Badge & Chip Utility Mixins
+.badge-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  white-space: nowrap;
+  line-height: 1.4;
+
+  mat-icon, .badge-icon {
+    font-size: 14px;
+    width: 14px;
+    height: 14px;
+    line-height: 14px;
+  }
+}

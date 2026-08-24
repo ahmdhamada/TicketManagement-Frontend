@@ -1,94 +1,151 @@
-<div class="page-header">
-  <h1>Tickets</h1>
-  @if (authService.role() !== UserRole.Agent) {
-    <button mat-flat-button color="primary" routerLink="/tickets/new">
-      <mat-icon>add</mat-icon>
-      New Ticket
-    </button>
-  }
-</div>
-
-<div class="filters">
-  <mat-form-field appearance="outline">
-    <mat-label>Search</mat-label>
-    <input matInput [ngModel]="search" (ngModelChange)="onSearchInput($event)" placeholder="Title or description" />
-  </mat-form-field>
-
-  <mat-form-field appearance="outline">
-    <mat-label>Status</mat-label>
-    <mat-select [(ngModel)]="statusFilter" (selectionChange)="onFilterChange()">
-      <mat-option [value]="null">All</mat-option>
-      @for (status of statuses; track status) {
-        <mat-option [value]="status">{{ status }}</mat-option>
-      }
-    </mat-select>
-  </mat-form-field>
-
-  <mat-form-field appearance="outline">
-    <mat-label>Priority</mat-label>
-    <mat-select [(ngModel)]="priorityFilter" (selectionChange)="onFilterChange()">
-      <mat-option [value]="null">All</mat-option>
-      @for (priority of priorities; track priority) {
-        <mat-option [value]="priority">{{ priority }}</mat-option>
-      }
-    </mat-select>
-  </mat-form-field>
-</div>
-
-@if (loading()) {
-  <div class="loading">
-    <mat-spinner diameter="32" />
+<div class="tickets-page">
+  <div class="page-header">
+    <div class="header-title-group">
+      <h1>Support Tickets</h1>
+      <span class="count-badge">{{ totalCount() }} total tickets</span>
+    </div>
+    @if (authService.role() !== UserRole.Agent) {
+      <button mat-flat-button color="primary" routerLink="/tickets/new" class="create-btn">
+        <mat-icon>add</mat-icon>
+        <span>New Ticket</span>
+      </button>
+    }
   </div>
-} @else {
-  <table mat-table [dataSource]="tickets()" matSort (matSortChange)="onSortChange($event)" class="tickets-table">
-    <ng-container matColumnDef="id">
-      <th mat-header-cell *matHeaderCellDef>#</th>
-      <td mat-cell *matCellDef="let ticket">{{ ticket.id }}</td>
-    </ng-container>
 
-    <ng-container matColumnDef="title">
-      <th mat-header-cell mat-sort-header="title" *matHeaderCellDef>Title</th>
-      <td mat-cell *matCellDef="let ticket">{{ ticket.title }}</td>
-    </ng-container>
+  <div class="filter-card">
+    <div class="filter-grid">
+      <mat-form-field appearance="outline" class="search-field">
+        <mat-label>Search tickets</mat-label>
+        <mat-icon matPrefix>search</mat-icon>
+        <input matInput [ngModel]="search" (ngModelChange)="onSearchInput($event)" placeholder="Search by title or description..." />
+        @if (search) {
+          <button mat-icon-button matSuffix (click)="onSearchInput('')" aria-label="Clear search">
+            <mat-icon>close</mat-icon>
+          </button>
+        }
+      </mat-form-field>
 
-    <ng-container matColumnDef="status">
-      <th mat-header-cell mat-sort-header="status" *matHeaderCellDef>Status</th>
-      <td mat-cell *matCellDef="let ticket"><app-status-badge [status]="ticket.status" /></td>
-    </ng-container>
+      <mat-form-field appearance="outline">
+        <mat-label>Status</mat-label>
+        <mat-icon matPrefix>filter_list</mat-icon>
+        <mat-select [(ngModel)]="statusFilter" (selectionChange)="onFilterChange()">
+          <mat-option [value]="null">All Statuses</mat-option>
+          @for (status of statuses; track status) {
+            <mat-option [value]="status">{{ status }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
 
-    <ng-container matColumnDef="priority">
-      <th mat-header-cell mat-sort-header="priority" *matHeaderCellDef>Priority</th>
-      <td mat-cell *matCellDef="let ticket"><app-priority-badge [priority]="ticket.priority" /></td>
-    </ng-container>
+      <mat-form-field appearance="outline">
+        <mat-label>Priority</mat-label>
+        <mat-icon matPrefix>flag</mat-icon>
+        <mat-select [(ngModel)]="priorityFilter" (selectionChange)="onFilterChange()">
+          <mat-option [value]="null">All Priorities</mat-option>
+          @for (priority of priorities; track priority) {
+            <mat-option [value]="priority">{{ priority }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
 
-    <ng-container matColumnDef="assignedTo">
-      <th mat-header-cell *matHeaderCellDef>Assigned to</th>
-      <td mat-cell *matCellDef="let ticket">{{ ticket.assignedToName ?? '—' }}</td>
-    </ng-container>
+      @if (search || statusFilter !== null || priorityFilter !== null) {
+        <button mat-stroked-button (click)="resetFilters()" class="reset-btn">
+          <mat-icon>restart_alt</mat-icon>
+          <span>Reset</span>
+        </button>
+      }
+    </div>
+  </div>
 
-    <ng-container matColumnDef="createdAt">
-      <th mat-header-cell mat-sort-header="createdAt" *matHeaderCellDef>Created</th>
-      <td mat-cell *matCellDef="let ticket">{{ ticket.createdAtUtc | date: 'short' }}</td>
-    </ng-container>
+  @if (loading()) {
+    <div class="loading-state">
+      <mat-spinner diameter="40" />
+      <span>Loading tickets...</span>
+    </div>
+  } @else {
+    <div class="table-container">
+      <table mat-table [dataSource]="tickets()" matSort (matSortChange)="onSortChange($event)" class="tickets-table">
+        <ng-container matColumnDef="id">
+          <th mat-header-cell *matHeaderCellDef>#</th>
+          <td mat-cell *matCellDef="let ticket">
+            <span class="ticket-id">#{{ ticket.id }}</span>
+          </td>
+        </ng-container>
 
-    <ng-container matColumnDef="timeSpent">
-      <th mat-header-cell *matHeaderCellDef>Time logged</th>
-      <td mat-cell *matCellDef="let ticket">{{ ticket.totalTimeSpentMinutes }} min</td>
-    </ng-container>
+        <ng-container matColumnDef="title">
+          <th mat-header-cell mat-sort-header="title" *matHeaderCellDef>Title</th>
+          <td mat-cell *matCellDef="let ticket" class="title-cell">
+            <span class="ticket-title">{{ ticket.title }}</span>
+          </td>
+        </ng-container>
 
-    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-    <tr mat-row *matRowDef="let ticket; columns: displayedColumns" (click)="openTicket(ticket.id)" class="clickable-row"></tr>
-  </table>
+        <ng-container matColumnDef="status">
+          <th mat-header-cell mat-sort-header="status" *matHeaderCellDef>Status</th>
+          <td mat-cell *matCellDef="let ticket">
+            <app-status-badge [status]="ticket.status" />
+          </td>
+        </ng-container>
 
-  @if (tickets().length === 0) {
-    <p class="empty-state">No tickets found.</p>
+        <ng-container matColumnDef="priority">
+          <th mat-header-cell mat-sort-header="priority" *matHeaderCellDef>Priority</th>
+          <td mat-cell *matCellDef="let ticket">
+            <app-priority-badge [priority]="ticket.priority" />
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="assignedTo">
+          <th mat-header-cell *matHeaderCellDef>Assigned to</th>
+          <td mat-cell *matCellDef="let ticket">
+            @if (ticket.assignedToName) {
+              <div class="assigned-user">
+                <mat-icon class="user-icon">account_circle</mat-icon>
+                <span>{{ ticket.assignedToName }}</span>
+              </div>
+            } @else {
+              <span class="unassigned">&mdash;</span>
+            }
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="createdAt">
+          <th mat-header-cell mat-sort-header="createdAt" *matHeaderCellDef>Created</th>
+          <td mat-cell *matCellDef="let ticket" class="date-cell">
+            {{ ticket.createdAtUtc | date: 'mediumDate' }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="timeSpent">
+          <th mat-header-cell *matHeaderCellDef>Time logged</th>
+          <td mat-cell *matCellDef="let ticket">
+            <span class="time-logged-chip">
+              <mat-icon>schedule</mat-icon>
+              {{ ticket.totalTimeSpentMinutes }} min
+            </span>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let ticket; columns: displayedColumns" (click)="openTicket(ticket.id)" class="clickable-row"></tr>
+      </table>
+
+      @if (tickets().length === 0) {
+        <div class="empty-state">
+          <div class="empty-icon-circle">
+            <mat-icon>inbox</mat-icon>
+          </div>
+          <h3>No tickets found</h3>
+          <p>Try adjusting your search query or status filter to find what you're looking for.</p>
+          <button mat-flat-button color="primary" (click)="resetFilters()">Clear Filters</button>
+        </div>
+      }
+
+      <mat-paginator
+        [length]="totalCount()"
+        [pageSize]="pageSize"
+        [pageIndex]="page - 1"
+        [pageSizeOptions]="[10, 20, 50]"
+        (page)="onPageChange($event)"
+        class="custom-paginator"
+      />
+    </div>
   }
-
-  <mat-paginator
-    [length]="totalCount()"
-    [pageSize]="pageSize"
-    [pageIndex]="page - 1"
-    [pageSizeOptions]="[10, 20, 50]"
-    (page)="onPageChange($event)"
-  />
-}
+</div>

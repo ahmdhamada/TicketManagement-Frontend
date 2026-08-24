@@ -1,35 +1,238 @@
-.toolbar {
-  position: sticky;
-  top: 0;
+.shell-layout {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.app-toolbar {
+  height: 64px;
+  background: #1e1b4b !important; // Deep Indigo M3 Surface
+  color: #ffffff !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
   z-index: 10;
+  padding: 0 16px;
+
+  .toolbar-brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    .mobile-toggle {
+      display: none;
+      @media (max-width: 960px) {
+        display: inline-flex;
+      }
+    }
+
+    .brand-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+
+      .brand-icon {
+        color: #818cf8;
+        font-size: 28px;
+        width: 28px;
+        height: 28px;
+      }
+
+      .brand-title {
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-weight: 800;
+        font-size: 1.25rem;
+        letter-spacing: -0.02em;
+        background: linear-gradient(135deg, #ffffff 0%, #c7d2fe 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+    }
+  }
+
+  .toolbar-spacer {
+    flex: 1 1 auto;
+  }
+
+  .toolbar-actions {
+    display: flex;
+    align-items: center;
+
+    .user-menu-trigger {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 4px 12px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.1);
+      transition: background-color 0.2s ease;
+      color: #ffffff;
+      height: 42px !important;
+
+      &:hover {
+        background: rgba(255, 255, 255, 0.18);
+      }
+
+      .user-name-text {
+        font-size: 0.875rem;
+        font-weight: 600;
+
+        @media (max-width: 600px) {
+          display: none;
+        }
+      }
+
+      .dropdown-icon {
+        font-size: 20px;
+        width: 20px;
+        height: 20px;
+      }
+    }
+  }
 }
 
-.brand {
-  font-weight: 600;
+// User Initials Circle Avatar
+.avatar-circle {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 0.8rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  letter-spacing: 0.05em;
+
+  &.large {
+    width: 44px;
+    height: 44px;
+    font-size: 1.1rem;
+  }
 }
 
-.spacer {
-  flex: 1 1 auto;
+// User Profile Menu Dropdown Overlay
+::ng-deep .user-profile-menu {
+  border-radius: 16px !important;
+  padding: 8px 0 !important;
+  min-width: 240px !important;
+
+  .menu-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+
+    .user-info {
+      display: flex;
+      flex-direction: column;
+
+      .user-name {
+        font-weight: 700;
+        color: #0f172a;
+        font-size: 0.95rem;
+      }
+
+      .user-email {
+        font-size: 0.775rem;
+        color: #64748b;
+      }
+
+      .role-badge {
+        display: inline-block;
+        margin-top: 4px;
+        padding: 2px 8px;
+        border-radius: 999px;
+        background: #e0e7ff;
+        color: #3730a3;
+        font-size: 0.7rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        width: fit-content;
+      }
+    }
+  }
 }
 
-.user-chip {
-  margin-right: 8px;
-  font-size: 14px;
-  opacity: 0.9;
-}
+// Sidenav Navigation Rail
+.app-sidenav-container {
+  flex: 1;
+  background: transparent;
 
-.container {
-  height: calc(100vh - 64px);
-}
+  .app-sidenav {
+    width: 260px;
+    background: #ffffff;
+    border-right: 1px solid #e2e8f0;
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.02);
+    padding: 16px 12px;
 
-.sidenav {
-  width: 220px;
-}
+    @media (max-width: 960px) {
+      width: 240px;
+    }
 
-.content {
-  padding: 24px;
-}
+    .sidenav-header {
+      padding: 12px 16px 6px;
 
-.active-link {
-  background: rgba(0, 0, 0, 0.05);
+      .sidenav-label {
+        font-size: 0.7rem;
+        font-weight: 800;
+        color: #94a3b8;
+        letter-spacing: 0.08em;
+      }
+    }
+
+    .nav-list {
+      padding-top: 4px;
+
+      a[mat-list-item] {
+        border-radius: 12px;
+        margin-bottom: 4px;
+        color: #475569;
+        font-weight: 600;
+        transition: all 0.15s ease;
+
+        mat-icon {
+          color: #64748b;
+        }
+
+        &:hover {
+          background-color: #f1f5f9;
+          color: #1e1b4b;
+
+          mat-icon {
+            color: #4338ca;
+          }
+        }
+
+        &.active-nav-item {
+          background: #eef2ff !important;
+          color: #4338ca !important;
+          font-weight: 700;
+
+          mat-icon {
+            color: #4338ca !important;
+          }
+        }
+      }
+
+      .nav-divider {
+        margin: 16px 0;
+      }
+    }
+  }
+
+  .app-content {
+    background: var(--app-bg-gradient);
+    overflow-y: auto;
+
+    .content-wrapper {
+      padding: 24px;
+      max-width: 1280px;
+      margin: 0 auto;
+
+      @media (max-width: 600px) {
+        padding: 16px;
+      }
+    }
+  }
 }
